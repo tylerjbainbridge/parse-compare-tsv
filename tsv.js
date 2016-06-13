@@ -4,9 +4,14 @@ const csv = require('fast-csv');
 const async = require('async');
 const _ = require('lodash');
 
-var args = process.argv.slice(2);
-var actualFile = args[0];
-var expectedFile = args[1];
+const args = process.argv.slice(2);
+const actualFile = args[0];
+const expectedFile = args[1];
+
+const csvOptions = {
+  headers: true,
+  delimiter:'\t'
+}
 
 if (!actualFile) {
   console.log('Must provide an actual file');
@@ -21,7 +26,7 @@ async.parallel([
     (callback)=>{
       let actual = [];
       csv
-       .fromPath(actualFile, {headers: true, delimiter:'\t'})
+       .fromPath(actualFile, csvOptions)
        .on("data", (data)=>{
            actual.push(data);
        })
@@ -32,7 +37,7 @@ async.parallel([
     (callback)=>{
       let expected = [];
       csv
-       .fromPath(expectedFile, {headers: true,delimiter:'\t'})
+       .fromPath(expectedFile, csvOptions)
        .on("data", (data)=>{
           expected.push(data);
        })
