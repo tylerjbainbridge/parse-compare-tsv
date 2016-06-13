@@ -56,9 +56,12 @@ function compareFiles(actual, expected){
 
   if(_.size(actual) === _.size(expected))
     console.log(`Same number of rows: ${_.size(actual)}`);
+  else
+    console.error('Error: Different amount of rows in actual.');
 
   _.forEach(expected, function(row){
-    if(!_.find(actual, row)) console.log(`Couldn't find expected row in actual:\n${JSON.stringify(row)}`);
+    if(!_.find(actual, row))
+      console.log(`Couldn't find expected row in actual:\n${JSON.stringify(row)}`);
   })
 
 }
