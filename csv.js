@@ -22,7 +22,7 @@ async.parallel([
     (callback)=>{
       let expected = [];
       csv
-       .fromPath(expectedFile, {headers: true,delimiter:'\t'})
+       .fromPath(expectedFile, {headers: true, delimiter:'\t'})
        .on("data", (data)=>{
           expected.push(data);
        })
