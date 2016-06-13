@@ -3,7 +3,7 @@
 const csv = require('fast-csv');
 const async = require('async');
 const _ = require('lodash');
-var TSV = require('./tsv-class');
+const TSV = require('./tsv-class');
 
 const args = process.argv.slice(2);
 const actualFile = args[0];

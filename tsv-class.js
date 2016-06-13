@@ -15,56 +15,40 @@ class tsvParser{
     }
   }
 
+  parseCSV(filePath, cb){
+    var self = this;
+    let array = [];
+
+    csv
+     .fromPath(filePath, self.options)
+     .on("data", (data)=>{
+         array.push(data);
+     })
+
+     .on("end", ()=>{
+       if(array.length == 0){
+         cb(new Error(`Error: ${filePath} is empty.`));
+       }else{
+         cb(null, array);
+       }
+     })
+
+     .on('error', (err)=>{
+       //+2 is  to account for the headers and the array indexing.
+       console.log(`Error found on line: ${array.length+2}.`);
+       cb(err);
+     });
+  }
+
   readFiles(cb){
     var self = this;
 
     async.parallel([
-        (callback)=>{
-          let actual = [];
-
-          csv
-           .fromPath(self.actualFile, self.options)
-           .on("data", (data)=>{
-               actual.push(data);
-           })
-
-           .on("end", ()=>{
-             if(actual.length == 0){
-               callback(new Error('Error: actualFile is empty.'));
-             }else{
-               callback(null, actual);
-             }
-           })
-
-           .on('error', (err)=>{
-             //+2 is  to account for the headers and the array indexing.
-             console.log(`Error found on line: ${actual.length+2}.`);
-             callback(err);
-           });
-
+        (cb)=>{
+          self.parseCSV(self.actualFile, cb);
         },
-        (callback)=>{
-          let expected = [];
-
-          csv
-           .fromPath(self.expectedFile, self.options)
-           .on("data", (data)=>{
-              expected.push(data);
-           })
-
-           .on("end", ()=>{
-             if(expected.length == 0){
-                callback(new Error('Error: expectedFile is empty.'), expected);
-             }else{
-               callback(null, expected);
-             }
-           })
-
-           .on('error', (err)=>{
-             console.log(`Error found on line: ${expected.length+2}.`);
-             callback(err);
-           });
-
+        (cb)=>{
+          self.parseCSV(self.expectedFile, cb);
         }
     ],
 
