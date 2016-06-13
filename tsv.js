@@ -9,11 +9,11 @@ var actualFile = args[0];
 var expectedFile = args[1];
 
 if (!actualFile) {
-  console.log('Must provide actual file');
+  console.log('Must provide an actual file');
   process.exit();
 }
 if (!expectedFile) {
-  console.log('Must provide expected file');
+  console.log('Must provide an expected file');
   process.exit();
 }
 
@@ -47,6 +47,11 @@ async.parallel([
   compareFiles(results[0], results[1]);
 });
 
+/**
+ * Compares two .tsv files.
+ * @param  {[type]} actual   array of rows and columns from actual file.
+ * @param  {[type]} expected array of rows and columns from expected file.
+ */
 function compareFiles(actual, expected){
   if(_.size(actual) === _.size(expected)){
     for(let i=0; i<actual.length; i++){
