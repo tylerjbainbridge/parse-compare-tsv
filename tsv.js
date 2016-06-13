@@ -36,6 +36,9 @@ async.parallel([
          }else{
            callback(null, actual);
          }
+       })
+       .on('error', (err)=>{
+         callback(err);
        });
     },
     (callback)=>{
@@ -51,6 +54,9 @@ async.parallel([
          }else{
            callback(null, expected);
          }
+       })
+       .on('error', (err)=>{
+         callback(err);
        });
     }
 ],
@@ -76,14 +82,19 @@ function compareFiles(actual, expected){
   else
     console.error(new Error('Error: Different amount of rows in actual.'));
 
-  if(_.size(actual[0]) === _.size(expected[0]))
-    console.log(`Same number of columns: ${_.size(actual[0])}`);
-  else
-    console.error(new Error('Error: Different amount of columns in actual.'));
+  let actualColumnSize = _.size(actual[0]);
+  // if(_.size(actual[0]) === _.size(expected[0]))
+  //   console.log(`Same number of columns: ${_.size(actual[0])}`);
+  // else
+  //   console.error(new Error('Error: Different amount of columns in actual.'));
 
-  _.forEach(expected, function(row){
+  _.forEach(expected, (row)=>{
     if(!_.find(actual, row))
       console.log(`Couldn't find expected row in actual:\n${JSON.stringify(row)}`);
+    if(actualColumnSize != _.size(row))
+      console.log(`long`);
+    else
+      console.log(_.size(row));
   })
 
 }
