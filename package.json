@@ -1,0 +1,23 @@
+{
+  "name": "parse-compare-tsv",
+  "version": "1.0.0",
+  "description": "Parse and compare two tab-seperated-value files and handle errors in comparison gracefully",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mjannino/parse-compare-tsv.git"
+  },
+  "author": "Michael Jannino / Tyler Bainbridge",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mjannino/parse-compare-tsv/issues"
+  },
+  "homepage": "https://github.com/mjannino/parse-compare-tsv#readme",
+  "dependencies": {
+    "fast-csv": "^2.0.0",
+    "fs": "0.0.2"
+  }
+}
