@@ -31,7 +31,11 @@ async.parallel([
            actual.push(data);
        })
        .on("end", ()=>{
+         if(actual.length == 0){
+           callback(new Error('Error: actualFile is empty.'));
+         }else{
            callback(null, actual);
+         }
        });
     },
     (callback)=>{
@@ -42,14 +46,22 @@ async.parallel([
           expected.push(data);
        })
        .on("end", ()=>{
+         if(expected.length == 0){
+            callback(new Error('Error: expectedFile is empty.'), expected);
+         }else{
            callback(null, expected);
+         }
        });
     }
 ],
 
 (err, results)=>{
   //console.log(results);
-  compareFiles(results[0], results[1]);
+  if(err){
+    console.error(err);
+  }else{
+    compareFiles(results[0], results[1]);
+  }
 });
 
 /**
@@ -62,7 +74,7 @@ function compareFiles(actual, expected){
   if(_.size(actual) === _.size(expected))
     console.log(`Same number of rows: ${_.size(actual)}`);
   else
-    console.error('Error: Different amount of rows in actual.');
+    console.error(new Error('Error: Different amount of rows in actual.'));
 
   _.forEach(expected, function(row){
     if(!_.find(actual, row))
