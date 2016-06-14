@@ -3,7 +3,8 @@
 const csv = require('fast-csv');
 const async = require('async');
 const _ = require('lodash');
-const TSV = require('./tsv-class');
+
+const CSVParser = require('./tsv-class');
 
 const args = process.argv.slice(2);
 const actualFile = args[0];
@@ -18,8 +19,17 @@ if (!expectedFile) {
   process.exit();
 }
 
-var tsv = new TSV(actualFile, expectedFile);
+// var options = {
+//   headers: true,
+//   delimiter:'\t'
+// };
+
+var tsv = new CSVParser(actualFile, expectedFile, '/t');
 
 tsv.readFiles(function(err, res){
-  tsv.compareFiles();
+  if(err){
+    console.error(err);
+  }else{
+    tsv.compareFiles();
+  }
 });

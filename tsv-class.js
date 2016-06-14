@@ -4,17 +4,29 @@ const csv = require('fast-csv');
 const async = require('async');
 const _ = require('lodash');
 
-class tsvParser{
+class csvParser{
 
-  constructor(actual, expected){
+  constructor(actual, expected, delimiter){
     this.actualFile = actual;
     this.expectedFile = expected;
     this.options = {
       headers: true,
-      delimiter:'\t'
-    }
+      delimiter: delimiter
+    };
   }
 
+  /**
+   * @param {[type]} delimiter: a character to split on while parsing.
+   */
+  set delimiter(delimiter){
+    this.options.delimiter = delimiter;
+  }
+
+  /**
+   * [parseCSV description] Opens a file, splits on the specified delimiter, and stores the result in an object array.
+   * @param  {[type]}   filePath [description] file to parse.
+   * @param  {Function} cb       [description] cb for handing async flow.
+   */
   parseCSV(filePath, cb){
     var self = this;
     let array = [];
@@ -26,7 +38,7 @@ class tsvParser{
      })
 
      .on("end", ()=>{
-       if(array.length == 0){
+       if(!array.length){
          cb(new Error(`Error: ${filePath} is empty.`));
        }else{
          cb(null, array);
@@ -35,11 +47,17 @@ class tsvParser{
 
      .on('error', (err)=>{
        //+2 is  to account for the headers and the array indexing.
-       console.log(`Error found on line: ${array.length+2}.`);
+       if(err.message.match(/column header mismatch expected/i)){
+         console.log(`Error found on line: ${array.length+2}.`);
+       }
        cb(err);
      });
   }
 
+  /**
+   * [readFiles description] Parses the csv files and returns an object containing both arrays.
+   * @param  {Function} cb [description] cb for handling async flow.
+   */
   readFiles(cb){
     var self = this;
 
@@ -51,7 +69,6 @@ class tsvParser{
           self.parseCSV(self.expectedFile, cb);
         }
     ],
-
     (err, results)=>{
       //console.log(results);
       self.actual = results[0];
@@ -60,9 +77,14 @@ class tsvParser{
     });
   }
 
+  /**
+   * [compareFiles description] Work in progress.
+   */
   compareFiles(){
+    //Checks if they have the same number of rows.
     _.size(this.actual) === _.size(this.expected) ? console.log(`Same number of rows: ${_.size(this.actual)}`) : console.error(new Error('Error: Different amount of rows in actual.'));
 
+    //Is every row in expectedFile in actualFile?
     _.forEach(this.expected, (row)=>{
       if(!_.find(this.actual, row)) console.log(`Can't find expected row in actual:\n${JSON.stringify(row)}`);
     })
@@ -70,4 +92,4 @@ class tsvParser{
 
 }
 
-module.exports = tsvParser;
+module.exports = csvParser;
